@@ -8,22 +8,24 @@ class BookList {
     thisBookList.favoriteBooks = [];
     thisBookList.filters = [];
   
-    thisBookList.getElements();
     thisBookList.initData();
+    thisBookList.getElements();
+    thisBookList.render();
     thisBookList.initActions();
   }
 
   initData(){
     const thisBookList = this;
     thisBookList.data = dataSource.books;
-    thisBookList.template = Handlebars.compile(document.querySelector('#template-book').innerHTML);
-
+    
+  }
+  
+  render(){
+    const thisBookList = this;
     for(let book of thisBookList.data){   
       const ratingBgc = thisBookList.determineRatingBgc(book.rating);
-      book.ratingBgc = ratingBgc;
       const ratingWidth = book.rating * 10;
-      book.ratingWidth = ratingWidth;
-      const generatedHTML = thisBookList.template(book);
+      const generatedHTML = thisBookList.template(Object.assign(book, {ratingBgc, ratingWidth}));
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);        
       thisBookList.dom.bookList.appendChild(generatedDOM);
     }
@@ -34,6 +36,8 @@ class BookList {
     thisBookList.dom = {};
     thisBookList.dom.bookList = document.querySelector('.books-list');
     thisBookList.dom.filters = document.querySelector('.filters');
+
+    thisBookList.template = Handlebars.compile(document.querySelector('#template-book').innerHTML);
   }
   
   initActions(){
@@ -111,4 +115,4 @@ class BookList {
   }
 }
 
-const app = new BookList();
+new BookList();
